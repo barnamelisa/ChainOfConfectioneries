@@ -1,14 +1,14 @@
 package view;
 
 import presenter.CofetariePresenter;
-import presenter.CofetarieViewPresenter;
 import presenter.PrajituraPresenter;
+import presenter.interfata.CofetarieViewI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
 
-public class CofetarieView extends JDialog implements Serializable {
+public class CofetarieView extends JDialog implements Serializable, CofetarieViewI {
     private JButton addNewCofetarie;
     private JButton editCofetarieButton;
     private JButton deleteCofetarieButton;
@@ -16,13 +16,13 @@ public class CofetarieView extends JDialog implements Serializable {
     private JButton backButton;
     private JButton addStockButton;
     private FirstPage parentPage;
+    private CofetariePresenter presenter;
 
     public CofetarieView(FirstPage parent){
         super(parent);
         this.parentPage = parent;
 
-        CofetarieViewPresenter presenter = new CofetarieViewPresenter(this);
-        presenter.showViewCofetarie();
+        this.presenter = new CofetariePresenter(this);
 
         setTitle("Confectionery Page");
         setMinimumSize(new Dimension(450, 474));
@@ -59,8 +59,9 @@ public class CofetarieView extends JDialog implements Serializable {
         backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(270, 40));
 
-        CofetariePresenter cofetariePresenter = new CofetariePresenter();
-        PrajituraPresenter prajituraPresenter = new PrajituraPresenter();
+        CofetariePresenter cofetariePresenter = new CofetariePresenter(this);
+        Prajitura prajituraView = new Prajitura(parent);
+        PrajituraPresenter prajituraPresenter = new PrajituraPresenter(prajituraView);
 
         addNewCofetarie.addActionListener(e ->  {
             JDialog addNewDialog = new JDialog(CofetarieView.this, "Add New Confectionery", true);
@@ -522,5 +523,20 @@ public class CofetarieView extends JDialog implements Serializable {
         setVisible(true);
         setLocationRelativeTo(parent);
 
+    }
+
+    @Override
+    public void showViewCofetarie() {
+        setVisible(true);
+    }
+
+    @Override
+    public void displaySuccessMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Informație", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    @Override
+    public void displayErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Eroare", JOptionPane.ERROR_MESSAGE);
     }
 }

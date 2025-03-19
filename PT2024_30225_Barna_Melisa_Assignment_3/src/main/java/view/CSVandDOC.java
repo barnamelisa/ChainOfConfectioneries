@@ -1,15 +1,13 @@
 package view;
 
 import presenter.CSVandDOCPresenter;
-import presenter.PrajituraPresenter;
+import presenter.interfata.CSVandDOCI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
 
-public class CSVandDOC extends JDialog implements Serializable {
+public class CSVandDOC extends JDialog implements Serializable, CSVandDOCI {
     private JTextField textField1;
     private JButton saveButton;
     private JButton backButton;
@@ -20,6 +18,8 @@ public class CSVandDOC extends JDialog implements Serializable {
         super(parentPage);
         this.parentPage = parentPage;
         this.presenter = new CSVandDOCPresenter(this);
+
+        presenter.showView();
 
         setTitle("Search By Availability Or Validity");
         setMinimumSize(new Dimension(700, 600));
@@ -50,38 +50,9 @@ public class CSVandDOC extends JDialog implements Serializable {
         textField1 = new JTextField(20);
         add(textField1, gbc);
 
-        saveButton = new JButton("Save");
-        saveButton.setPreferredSize(new Dimension(270, 40));
-
-        PrajituraPresenter prajituraPresenter = new PrajituraPresenter();
-
         saveButton.addActionListener(e -> {
-            String cofetarieIdText = presenter.getText();
-            try {
-                int cofetarieId = Integer.parseInt(cofetarieIdText);
-                boolean cofetarieExists = prajituraPresenter.checkCofetarieExists(cofetarieId);
-
-                if (!cofetarieExists) {
-                    JOptionPane.showMessageDialog(CSVandDOC.this, "Cofetăria cu ID-ul " + cofetarieId + " nu există!", "Eroare", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                List<model.Prajitura> prajituri = prajituraPresenter.findExpiredOrOutOfStockCakes(LocalDate.now());
-
-                if (prajituri.isEmpty()) {
-                    JOptionPane.showMessageDialog(CSVandDOC.this, "Nu există prăjituri expirate sau epuizate în stoc.", "Informație", JOptionPane.INFORMATION_MESSAGE);
-                    return;
-                }
-
-                prajituraPresenter.createCSV(prajituri);
-                JOptionPane.showMessageDialog(CSVandDOC.this, "Fișierul CSV a fost creat cu succes!", "Succes", JOptionPane.INFORMATION_MESSAGE);
-
-                prajituraPresenter.savePrajituraToDoc(prajituri, "Fisier doc");
-                JOptionPane.showMessageDialog(CSVandDOC.this, "Fișierul doc a fost creat cu succes!", "Succes", JOptionPane.INFORMATION_MESSAGE);
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID-ul cofetăriei trebuie să fie un număr valid!", "Eroare", JOptionPane.ERROR_MESSAGE);
-            }
+            String cofetarieIdText = textField1.getText();
+            presenter.processCofetarieId(cofetarieIdText);
         });
 
         gbc.gridy = 3;
@@ -98,8 +69,23 @@ public class CSVandDOC extends JDialog implements Serializable {
         gbc.gridy = 4;
         add(backButton, gbc);
     }
-    public String getTextFromField() {
-        return textField1.getText();
+
+    @Override
+    public void showView() {
+        setVisible(true);
     }
 
+    @Override
+    public String getCofetarieId() {
+        return text1.getText();
+    }
+    @Override
+    public void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Eroare", JOptionPane.ERROR_MESSAGE);
+    }
+
+    @Override
+    public void showInformationMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Informație", JOptionPane.INFORMATION_MESSAGE);
+    }
 }

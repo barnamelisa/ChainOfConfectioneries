@@ -1,16 +1,26 @@
 package presenter;
 
 import presenter.interfata.FirstPageI;
-import view.FirstPage;
 
-public class FirstPagePresenter implements FirstPageI {
-    private FirstPage view;
-    public FirstPagePresenter(FirstPage view) {
+public class FirstPagePresenter{
+    private FirstPageI view;
+    public FirstPagePresenter(FirstPageI view) {
         this.view = view;
     }
 
-    @Override
     public void showView() {
-        view.setVisible(true);
+        view.showView();
+    }
+
+    public void openCofetarieView() {
+        view.openCofetarieView();
+    }
+
+    public void openPrajituraView() {
+        view.openPrajituraView();
+    }
+
+    public void openCSVandDOCView() {
+        view.openCSVandDOCView();
     }
 }

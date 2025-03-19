@@ -1,7 +1,7 @@
 package view;
 
 import presenter.PrajituraPresenter;
-import presenter.PrajituraViewPresenter;
+import presenter.interfata.PrajituraI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.io.Serializable;
 import java.util.List;
 
-public class Prajitura extends JDialog implements Serializable {
+public class Prajitura extends JDialog implements Serializable, PrajituraI {
     private JButton addNewCakeButton, editCakeButton, deleteCakeButton, viewAllCakesButton, backButton, searchByNameButton, searchByAvailabilityOrButton;
     private FirstPage parentPage;
     private PrajituraPresenter prajituraPresenter;
@@ -21,10 +21,7 @@ public class Prajitura extends JDialog implements Serializable {
     public Prajitura(FirstPage parent) {
         super(parent);
         this.parentPage = parent;
-        this.prajituraPresenter = new PrajituraPresenter();
-
-        PrajituraViewPresenter presenter = new PrajituraViewPresenter(this);
-        presenter.showView();
+        this.prajituraPresenter = new PrajituraPresenter(this);
 
         setTitle("Cake Page");
         setMinimumSize(new Dimension(700, 600));
@@ -588,4 +585,13 @@ public class Prajitura extends JDialog implements Serializable {
         editDetailsDialog.setVisible(true);
     }
 
+    @Override
+    public void showView() {
+        setVisible(true);
+    }
+
+    @Override
+    public void displayMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
 }

@@ -2,14 +2,17 @@ package presenter;
 
 import model.Prajitura;
 import model.repository.CakeRepository;
+import presenter.interfata.PrajituraI;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class PrajituraPresenter {
     private final CakeRepository dataAccess;
+    private final PrajituraI view;
 
-    public PrajituraPresenter() {
+    public PrajituraPresenter(PrajituraI view) {
+        this.view = view;
         this.dataAccess = CakeRepository.getInstance();
     }
     public Prajitura findById(int id, String primaryKeyColumnName){
@@ -38,8 +41,8 @@ public class PrajituraPresenter {
     public List<Prajitura> findCakesByAvailability(int idCofetarie){
         return dataAccess.findCakesByAvailability(idCofetarie);
     }
-    public List<Prajitura> findExpiredOrOutOfStockCakes(LocalDate currentDate){
-        return dataAccess.findExpiredOrOutOfStockCakes(currentDate);
+    public List<Prajitura> findExpiredOrOutOfStockCakes(int cofetarieId,LocalDate currentDate){
+        return dataAccess.findExpiredOrOutOfStockCakes(cofetarieId,currentDate);
     }
     public void createCSV(List<Prajitura> expiredOrOutOfStockCakes){
         dataAccess.createCSV(expiredOrOutOfStockCakes);
@@ -49,5 +52,8 @@ public class PrajituraPresenter {
     }
     public boolean checkCofetarieExists(int cofetarieId){
         return dataAccess.checkCofetarieExists(cofetarieId);
+    }
+    public void showMessage(String message) {
+        view.displayMessage(message);
     }
 }

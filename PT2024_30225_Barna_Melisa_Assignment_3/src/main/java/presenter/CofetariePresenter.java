@@ -2,11 +2,14 @@ package presenter;
 
 import model.Cofetarie;
 import model.repository.CofetarieRepository;
+import presenter.interfata.CofetarieViewI;
 
 public class CofetariePresenter {
     private final CofetarieRepository dataAccess;
+    private final CofetarieViewI view;
 
-    public CofetariePresenter() {
+    public CofetariePresenter(CofetarieViewI view) {
+        this.view = view;
         this.dataAccess = CofetarieRepository.getInstance();
     }
 

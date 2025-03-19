@@ -170,7 +170,7 @@ public class Repository<T> implements Serializable {
                 statement.setInt(2, client.getId());
             } else if (t instanceof Prajitura) {
                 Prajitura prajitura = (Prajitura) t;
-                query = "UPDATE prajitura SET nume_prajitura = ?, descriere = ?, cofetarie_id = ?, pret = ?, data_expirare = ?, data_productie = ?, imagine = ? WHERE prajitura_id = ?";
+                query = "UPDATE prajitura SET nume_prajitura = ?, descriere = ?, cofetarie_id = ?, pret = ?, data_productie = ?, data_expirare = ?, imagine = ? WHERE prajitura_id = ?";
                 statement = connection.prepareStatement(query);
                 statement.setString(1, prajitura.getNume_prajitura());
                 statement.setString(2, prajitura.getDescriere());
@@ -323,18 +323,20 @@ public class Repository<T> implements Serializable {
         return cakes;
     }
 
-    public List<Prajitura> findExpiredOrOutOfStockCakes(LocalDate currentDate) {
+    public List<Prajitura> findExpiredOrOutOfStockCakes(int cofetarieId, LocalDate currentDate) {
         List<Prajitura> cakes = new ArrayList<>();
         String query = "SELECT p.* FROM prajitura p " +
                 "JOIN prajitura_cofetarie pc ON p.prajitura_id = pc.prajitura_id " +
-                "WHERE (pc.stoc = 0 OR p.data_expirare < ?)";
+                "WHERE (pc.stoc = 0 OR p.data_expirare < ?) " +
+                "AND pc.id_cofetarie = ?";  // Adăugăm filtrul pentru ID-ul cofetăriei
 
         try (java.sql.Connection connection = Connection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            preparedStatement.setDate(1, Date.valueOf(currentDate));
+            preparedStatement.setDate(1, Date.valueOf(currentDate));  // Setăm data curentă
+            preparedStatement.setInt(2, cofetarieId);  // Setăm ID-ul cofetăriei pentru filtrare
             ResultSet resultSet = preparedStatement.executeQuery();
-            cakes = (List<Prajitura>) createObjects(resultSet);
+            cakes = (List<Prajitura>) createObjects(resultSet);  // Crearea obiectelor din rezultatul interogării
 
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "findExpiredOrOutOfStockCakes " + e.getMessage());
@@ -342,6 +344,7 @@ public class Repository<T> implements Serializable {
 
         return cakes;
     }
+
 
     public void createCSV(List<Prajitura> expiredOrOutOfStockCakes) {
         String fileName = "expired_or_out_of_stock_cakes.csv";
