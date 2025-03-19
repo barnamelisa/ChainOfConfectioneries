@@ -1,13 +1,11 @@
 package view;
 
-import model.Prajitura;
-import model.repository.CakeRepository;
+import presenter.CSVandDOCPresenter;
 import presenter.PrajituraPresenter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
-import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,11 +15,11 @@ public class CSVandDOC extends JDialog implements Serializable {
     private JButton backButton;
     private JLabel text1;
     private FirstPage parentPage;
-    private Connection conexiune;
-    public CSVandDOC(FirstPage parentPage,Connection conexiune){
+    private CSVandDOCPresenter presenter;
+    public CSVandDOC(FirstPage parentPage){
         super(parentPage);
         this.parentPage = parentPage;
-        this.conexiune = conexiune;
+        this.presenter = new CSVandDOCPresenter(this);
 
         setTitle("Search By Availability Or Validity");
         setMinimumSize(new Dimension(700, 600));
@@ -55,10 +53,10 @@ public class CSVandDOC extends JDialog implements Serializable {
         saveButton = new JButton("Save");
         saveButton.setPreferredSize(new Dimension(270, 40));
 
-        PrajituraPresenter prajituraPresenter = new PrajituraPresenter(new CakeRepository());
+        PrajituraPresenter prajituraPresenter = new PrajituraPresenter();
 
         saveButton.addActionListener(e -> {
-            String cofetarieIdText = textField1.getText();
+            String cofetarieIdText = presenter.getText();
             try {
                 int cofetarieId = Integer.parseInt(cofetarieIdText);
                 boolean cofetarieExists = prajituraPresenter.checkCofetarieExists(cofetarieId);
@@ -68,7 +66,7 @@ public class CSVandDOC extends JDialog implements Serializable {
                     return;
                 }
 
-                List<Prajitura> prajituri = prajituraPresenter.findExpiredOrOutOfStockCakes(LocalDate.now());
+                List<model.Prajitura> prajituri = prajituraPresenter.findExpiredOrOutOfStockCakes(LocalDate.now());
 
                 if (prajituri.isEmpty()) {
                     JOptionPane.showMessageDialog(CSVandDOC.this, "Nu există prăjituri expirate sau epuizate în stoc.", "Informație", JOptionPane.INFORMATION_MESSAGE);
@@ -99,6 +97,9 @@ public class CSVandDOC extends JDialog implements Serializable {
 
         gbc.gridy = 4;
         add(backButton, gbc);
+    }
+    public String getTextFromField() {
+        return textField1.getText();
     }
 
 }

@@ -1,6 +1,5 @@
 package presenter;
 
-import model.Cofetarie;
 import model.Prajitura;
 import model.repository.CakeRepository;
 
@@ -10,8 +9,8 @@ import java.util.List;
 public class PrajituraPresenter {
     private final CakeRepository dataAccess;
 
-    public PrajituraPresenter(CakeRepository dataAccess) {
-        this.dataAccess = dataAccess;
+    public PrajituraPresenter() {
+        this.dataAccess = CakeRepository.getInstance();
     }
     public Prajitura findById(int id, String primaryKeyColumnName){
         return dataAccess.findById(id,primaryKeyColumnName);

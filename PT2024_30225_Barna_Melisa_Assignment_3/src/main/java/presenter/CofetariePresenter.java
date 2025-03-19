@@ -6,8 +6,8 @@ import model.repository.CofetarieRepository;
 public class CofetariePresenter {
     private final CofetarieRepository dataAccess;
 
-    public CofetariePresenter(CofetarieRepository dataAccess) {
-        this.dataAccess = dataAccess;
+    public CofetariePresenter() {
+        this.dataAccess = CofetarieRepository.getInstance();
     }
 
     public Cofetarie findById(int id, String primaryKeyColumnName){
@@ -24,8 +24,11 @@ public class CofetariePresenter {
         return dataAccess.update(cofetarie);
     }
 
-    public boolean deleteCofetarie(Cofetarie cofetarie, String columnName) {
-        return dataAccess.delete(cofetarie.getId(),columnName);
+    public boolean deleteCofetarieById(int id, String columnName) {
+        return dataAccess.delete(id, columnName);
+    }
+    public boolean doesCofetarieExist(int id) {
+        return dataAccess.findById(id, "id_cofetarie") != null;
     }
     public String displayObjectsFromDatabase(String tableName){
         return dataAccess.displayObjectsFromDatabase(tableName);

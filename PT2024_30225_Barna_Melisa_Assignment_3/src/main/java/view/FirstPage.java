@@ -1,10 +1,6 @@
 package view;
 
-import model.connection.Connection;
-import model.repository.CakeRepository;
-import model.repository.CofetarieRepository;
-import presenter.CofetariePresenter;
-import presenter.PrajituraPresenter;
+import presenter.FirstPagePresenter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,10 +10,12 @@ public class FirstPage extends JDialog implements Serializable {
     private JButton cofetariiButton;
     private JButton prajituriButton;
     private JButton saveCakesListButton;
-    private Connection conexiune;
 
     public FirstPage(JFrame parent){
         super(parent);
+
+        FirstPagePresenter presenter = new FirstPagePresenter(this);
+        presenter.showView();
 
         setTitle("Chain of Confectioneries");
         setMinimumSize(new Dimension(450, 474));
@@ -47,20 +45,20 @@ public class FirstPage extends JDialog implements Serializable {
 
         cofetariiButton.addActionListener(e -> {
             dispose();
-            CofetarieView clientView = new CofetarieView(FirstPage.this, conexiune);
+            CofetarieView clientView = new CofetarieView(FirstPage.this);
             clientView.setVisible(true);
         });
 
         prajituriButton.addActionListener(e -> {
             dispose();
-            Prajitura prajituraView = new Prajitura(FirstPage.this, conexiune);
+            Prajitura prajituraView = new Prajitura(FirstPage.this);
             prajituraView.setVisible(true);
         });
 
 
         saveCakesListButton.addActionListener(e -> {
             dispose();
-            CSVandDOC docView = new CSVandDOC(FirstPage.this, (java.sql.Connection) conexiune);
+            CSVandDOC docView = new CSVandDOC(FirstPage.this);
             docView.setVisible(true);
         });
 
