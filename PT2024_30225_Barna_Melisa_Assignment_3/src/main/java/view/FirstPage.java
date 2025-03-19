@@ -1,20 +1,21 @@
 package view;
 
 import presenter.FirstPagePresenter;
+import presenter.interfata.FirstPageI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
 
-public class FirstPage extends JDialog implements Serializable {
+public class FirstPage extends JDialog implements Serializable, FirstPageI {
     private JButton cofetariiButton;
     private JButton prajituriButton;
     private JButton saveCakesListButton;
+    private FirstPagePresenter presenter;
 
     public FirstPage(JFrame parent){
         super(parent);
-
-        FirstPagePresenter presenter = new FirstPagePresenter(this);
+        this.presenter = new FirstPagePresenter(this);
         presenter.showView();
 
         setTitle("Chain of Confectioneries");
@@ -43,26 +44,10 @@ public class FirstPage extends JDialog implements Serializable {
         saveCakesListButton = new JButton("Save Cakes List (Expired or Out of Stock) as CSV and DOC");
         saveCakesListButton.setPreferredSize(new Dimension(270, 40));
 
-        cofetariiButton.addActionListener(e -> {
-            dispose();
-            CofetarieView clientView = new CofetarieView(FirstPage.this);
-            clientView.setVisible(true);
-        });
+        cofetariiButton.addActionListener(e -> presenter.openCofetarieView());
+        prajituriButton.addActionListener(e -> presenter.openPrajituraView());
+        saveCakesListButton.addActionListener(e -> presenter.openCSVandDOCView());
 
-        prajituriButton.addActionListener(e -> {
-            dispose();
-            Prajitura prajituraView = new Prajitura(FirstPage.this);
-            prajituraView.setVisible(true);
-        });
-
-
-        saveCakesListButton.addActionListener(e -> {
-            dispose();
-            CSVandDOC docView = new CSVandDOC(FirstPage.this);
-            docView.setVisible(true);
-        });
-
-        // Adding buttons to layout
         GridBagConstraints buttonConstraints = new GridBagConstraints();
         buttonConstraints.gridx = 0;
         buttonConstraints.gridy = 1;
@@ -76,5 +61,31 @@ public class FirstPage extends JDialog implements Serializable {
         add(saveCakesListButton, buttonConstraints);
 
         setVisible(true);
+    }
+
+    @Override
+    public void showView() {
+        setVisible(true);
+    }
+
+    @Override
+    public void openCofetarieView() {
+        dispose();
+        CofetarieView cofetarieView = new CofetarieView(FirstPage.this);
+        cofetarieView.setVisible(true);
+    }
+
+    @Override
+    public void openPrajituraView() {
+        dispose();
+        Prajitura prajituraView = new Prajitura(FirstPage.this);
+        prajituraView.setVisible(true);
+    }
+
+    @Override
+    public void openCSVandDOCView() {
+        dispose();
+        CSVandDOC docView = new CSVandDOC(FirstPage.this);
+        docView.setVisible(true);
     }
 }
